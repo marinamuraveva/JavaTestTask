@@ -23,7 +23,6 @@ public class CarSuggestionListPage {
         suggestionListBrand.click();
         suggestionListBrandChoice.shouldBe().isSelected();
         return suggestionListBrandChoice.getText().trim();
-//        return suggestionListBrandChoice.getAttribute("textContent");
     }
 
     public void showSuggestionButtonClick() {
