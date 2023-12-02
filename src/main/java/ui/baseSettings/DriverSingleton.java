@@ -1,5 +1,4 @@
 package ui.baseSettings;
-
 //Установка настроек браузера с использованием паттерна Singleton
 
 import com.codeborne.selenide.Configuration;

@@ -1,7 +1,7 @@
 package ui.pages;
+//Страница предложения
 
 import com.codeborne.selenide.SelenideElement;
-
 import static com.codeborne.selenide.Selenide.$x;
 
 public class CarSuggestion {

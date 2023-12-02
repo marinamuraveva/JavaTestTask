@@ -1,4 +1,5 @@
 package ui.pages;
+//Страница фильтров
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
