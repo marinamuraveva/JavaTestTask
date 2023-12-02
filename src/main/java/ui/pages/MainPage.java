@@ -11,7 +11,6 @@ public class MainPage {
     public MainPage() {
     }
 
-//    Нажимаем кнопку 'Подобрать по параметрам' и переходим на форму automall
     public void goToCarSearchOptions() {
         carSearchOptionsButton.click();
     }

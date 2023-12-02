@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 
 public class DriverSingleton {
     private static DriverSingleton driverSingleton = null;
-
     protected DriverSingleton() {
     }
 
@@ -25,6 +24,7 @@ public class DriverSingleton {
         getInstance();
         Configuration.browser = "chrome";
         Configuration.browserSize = "1980x1080";
+        Configuration.pageLoadTimeout = 120000;
     }
 
     @AfterEach

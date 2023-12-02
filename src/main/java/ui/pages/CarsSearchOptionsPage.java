@@ -3,10 +3,12 @@ package ui.pages;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import static com.codeborne.selenide.Selenide.$$x;
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.*;
 
 public class CarsSearchOptionsPage {
+    private int cityIndex;
+    private int brandIndex;
+    private int modelIndex;
     private final SelenideElement discontCheckbox = $x("//*[text()='Только авто со скидкой']/../label");
     private final ElementsCollection cityList =
             $$x("//label[@id='filter-city']/..//div[@class='sbl-filter-checkbox-block']/div");
@@ -14,12 +16,38 @@ public class CarsSearchOptionsPage {
     private final ElementsCollection brandList =
             $$x("//label[@id='filter-mark']/..//div[@class='sbl-filter-checkbox-block']/div");
     private final SelenideElement filterBrand = $x("//*[@id='filter-mark']/input");
+    private final SelenideElement filterBrandChoice = $x("//*[@id='filter-mark']/span");
     private final ElementsCollection modelList =
             $$x("//label[@id='filter-model']/..//div[@class='sbl-filter-checkbox-block']/div");
     private final SelenideElement filterModel = $x("//*[@id='filter-model']/input");
-    private int cityIndex;
-    private int brandIndex;
-    private int modelIndex;
+    private final SelenideElement enginePowerMin = $x( "(//div[text()=' Мощность двигателя ']" +
+            "/..//*[contains(@class, 'button el-tooltip__trigger')])[1]");
+    private final SelenideElement enginePowerValue =
+            $x("//div[text()=' Мощность двигателя ']/..//div[@class='range-slider-values']");
+    private final ElementsCollection activeTransmissionCheckboxes =
+            $$x( "//*[text()=' Привод ']/..//input[not(@disabled)]");
+    private final SelenideElement firstTransmissionCheckbox =
+            $x( "//*[text()=' Привод ']/..//input[not(@disabled)][1]/../label");
+    private final ElementsCollection activeTransmissionBoxCheckboxes =
+            $$x( "//*[text()=' Коробка передач ']/..//input[not(@disabled)]");
+    private final SelenideElement firstTransmissionBoxCheckbox =
+            $x( "//*[text()=' Коробка передач ']/..//input[not(@disabled)][1]/../label");
+    private final ElementsCollection activeBodyTypeCheckboxes =
+            $$x( "//*[text()=' Тип кузова ']/..//input[not(@disabled)]");
+    private final SelenideElement firstBodyTypeCheckbox = $x( "//*[text()=' Тип кузова ']" +
+            "/..//input[not(@disabled)][1]/..//*[@class='checkboxes-body-type__label']");
+    private final SelenideElement engineCapasityMax = $x( "(//div[text()=' Объём двигателя ']" +
+            "/..//*[contains(@class, 'el-tooltip__trigger')])[2]");
+    private final SelenideElement engineCapasityValue =
+        $x("//div[text()=' Объём двигателя ']/..//div[@class='range-slider-values']");
+    private final ElementsCollection activeFuelTypeCheckboxes =
+            $$x( "//*[text()=' Тип топлива ']/..//input[not(@disabled)]");
+    private final SelenideElement firstFuelTypeCheckbox =
+            $x( "(//*[text()=' Тип топлива ']/..//input[not(@disabled)])[1]/../label");
+    private final SelenideElement colourOption = $x( "//*[text()=' Цвет ']/..//input[@placeholder]");
+    private final SelenideElement firstColour
+            = $x( "(//*[text()=' Цвет ']/..//label[@class='sbl-filter-checkbox__title'])[1]");
+    private final SelenideElement showAllButton = $x( "//*[text()=' Показать все предложения ']");
 
     public CarsSearchOptionsPage() {
     }
@@ -79,9 +107,12 @@ public class CarsSearchOptionsPage {
 
     public void setBrandOption() {
         updateDropdownList(brandList, filterBrand);
-        filterBrand.click();
         getBrandChoiceLocator().click();
         filterBrand.click();
+    }
+
+    public String getFilterBrand() {
+        return filterBrandChoice.getText().trim();
     }
 
     public void setModelOption() {
@@ -90,34 +121,65 @@ public class CarsSearchOptionsPage {
         getModelChoiceLocator().click();
         filterModel.click();
     }
+
+    private void waitSliderApplying(SelenideElement sliderValue) {
+        boolean FilterDetected = WebDriverRunner.getWebDriver().getCurrentUrl().contains("set_filter");
+        if (FilterDetected) {
+            String ValueBefore = sliderValue.getAttribute("textContent");
+            String ValueAfter = sliderValue.getAttribute("textContent");
+            for (int i = 0; i < 100; i++) {
+                if (ValueBefore.equals(ValueAfter)) {
+                    ValueAfter = sliderValue.getAttribute("textContent");
+                } else
+                    break;
+            }
+        }
+    }
+
+    public void setEnginePower() {
+        waitSliderApplying(enginePowerValue);
+        actions().moveToElement(enginePowerMin).clickAndHold().moveByOffset(300, 0)
+                .release().perform();
+    }
+
+    private void firstActiveCheckboxClick(ElementsCollection activeCheckboxes, SelenideElement firstCheckbox) {
+        if (activeCheckboxes.size() > 0) {
+            firstCheckbox.click();
+        }
+    }
+
+    public void setTransmission() {
+        firstActiveCheckboxClick(activeTransmissionCheckboxes, firstTransmissionCheckbox);
+    }
+
+    public void setTransmissionBox() {
+        firstActiveCheckboxClick(activeTransmissionBoxCheckboxes, firstTransmissionBoxCheckbox);
+    }
+
+    public void setBodyType() {
+        firstActiveCheckboxClick(activeBodyTypeCheckboxes, firstBodyTypeCheckbox);
+    }
+
+    public void setEngineCapacity() {
+        waitSliderApplying(engineCapasityValue);
+        actions().moveToElement(engineCapasityMax).clickAndHold().moveByOffset(-150, 0)
+                .release().perform();
+    }
+
+    public void setFuelType() {
+        firstActiveCheckboxClick(activeFuelTypeCheckboxes, firstFuelTypeCheckbox);
+    }
+
+    public void setColour() {
+        colourOption.click();
+        firstColour.click();
+        colourOption.click();
+    }
+
+    public void showAllButtonClick() {
+        showAllButton.click();
+    }
 }
 
 
-//
-//@allure.step("Выбираем Марку авто из списка")
-//    def set_brand_option(self):
-//            self.driver.find_element(*CarSearchOptions.FILTER_BRAND).click()
-//            self.driver.find_element(*self.car.get_brand_choice_locator()).click()
-//            self.driver.find_element(*CarSearchOptions.FILTER_BRAND).click()
-//            time.sleep(2)
-//
-//@allure.step("Определяем выбранную Марку авто")
-//    def get_filter_brand_choice(self):
-//            return (self.driver.find_element(*CarSearchOptions.FILTER_BRAND_CHOISE).get_attribute("textContent")).strip()
-//
-//@allure.step("Выбираем Модель авто из списка")
-//    def set_model_option(self):
-//            self.driver.find_element(*CarSearchOptions.FILTER_MODEL).click()
-//            self.driver.find_element(*self.car.get_model_choice_locator()).click()
-//            self.driver.find_element(*CarSearchOptions.FILTER_MODEL).click()
-//            time.sleep(2)
-//
-//@allure.step("Скролл блока выбора опций авто")
-//    def car_options_block_scroll(self):
-//            self.driver.find_element(*CarSearchOptions.FILTER_CITY).location_once_scrolled_into_view
-//
-//@allure.step("Указываем Мощность двигателя")
-//    def set_engine_power(self):
-//            slider = self.driver.find_element(*CarSearchOptions.ENGINE_POWER_MIN)
-//            slider.click()
-//            ActionChains(self.driver).drag_and_drop_by_offset(slider, 3, 0).perform()
+
