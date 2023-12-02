@@ -12,7 +12,4 @@ public class CarSuggestion {
     public String getSuggestionInfo() {
         return suggestionCarInfo.getText().trim();
     }
-
-//    def get_suggestion_info(self):
-//            return (self.driver.find_element(*CarSuggestionPage.SUGGESTION_CAR_INFO).get_attribute("innerText")).strip()
 }
