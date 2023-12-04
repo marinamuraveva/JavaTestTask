@@ -1,79 +1,39 @@
 package api;
 
 public class UserData {
-    private int id;
-    private String username;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password ;
-    private String phone;
-    private int userStatus;
+    private final int id = 1;
+    private String userName;
+    private final String firstName = "test";
+    private final String lastName = "test";
+    private final String email = "test@test.com";
+    private final String password = "qwerty" ;
+    private final String phone = "89990000000";
+    private final int userStatus = 0;
 
-    public UserData() {}
-
-
-    public int getId() {
-        return id;
+    private UserData() {
     }
 
     public String getUsername() {
-        return username;
+        return userName;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public static Builder newBuilder() {
+        return new UserData().new Builder();
     }
 
-    public String getLastName() {
-        return lastName;
-    }
+    public class Builder {
+        private Builder() {
+        }
 
-    public String getEmail() {
-        return email;
-    }
+        public Builder setUserName(String userName) {
+            UserData.this.userName = userName;
+            return this;
+        }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public int getUserStatus() {
-        return userStatus;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public void setUserStatus(int userStatus) {
-        this.userStatus = userStatus;
+        public UserData build() {
+            UserData userData = new UserData();
+            userData.userName = UserData.this.userName;
+            return userData;
+        }
     }
 }

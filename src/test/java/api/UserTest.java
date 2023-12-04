@@ -11,24 +11,20 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class UserTest {
-    private static final String URL = "https://petstore.swagger.io/v2/user";
-    private static final String username = "MuravevaTest";
+    private final String URL = "https://petstore.swagger.io/v2/user";
+    private final String username = "MuravevaTest";
 
     @Test
     public void createUser() throws JsonProcessingException {
         Specifications.installSpecification(Specifications.requestSpecification(URL),
                 Specifications.responseSpecification200());
 
-        UserData userData = new UserData();
-        userData.setId(1);
-        userData.setUsername(username);
-        userData.setFirstName("test");
-        userData.setLastName("test");
-        userData.setEmail("test@test.com");
-        userData.setPassword("qwerty");
-        userData.setPhone("89990000000");
-        userData.setUserStatus(0);
-        String jsonUserData = new ObjectMapper().writeValueAsString(userData);
+        UserData userData = UserData
+                .newBuilder()
+                .setUserName(username)
+                .build();
+        String jsonUserData = new ObjectMapper()
+                .writeValueAsString(userData);
         given()
                 .body(jsonUserData)
                 .when()
